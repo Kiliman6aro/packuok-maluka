@@ -16,11 +16,20 @@ new Vue({
                 .then(data => {
                     this.stores = data.content.map(store => ({
                         name: store.name,
-                        address: store.address
+                        address: this.trimAddress(store.address)
                     }));
                     this.loading = false;
                 })
                 .catch(error => console.error('Error fetching stores:', error));
+        },
+        trimAddress(address) {
+            const keyword = 'м. Дніпро';
+            const index = address.indexOf(keyword);
+            if (index !== -1) {
+                address = address.substring(index + keyword.length).trim();
+            }
+            address = address.replace(/^[\s.,]+/, ''); // Удаляем точку, запятую и пробелы в начале строки
+            return address;
         },
         openMap(address) {
             const query = encodeURIComponent(`М. Дніпро, ${address}`);
