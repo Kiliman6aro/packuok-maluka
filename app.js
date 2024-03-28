@@ -26,7 +26,11 @@ new Vue({
             const query = encodeURIComponent(`М. Дніпро, ${address}`);
             window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
         },
-        groupByName() {
+        toggleGrouping() {
+            if(this.isGrouped){
+                this.isGrouped = false;
+                return;
+            }
             const grouped = this.stores.reduce((acc, store) => {
                 if (!acc[store.name]) {
                     acc[store.name] = { name: store.name, addresses: [store.address] };
