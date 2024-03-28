@@ -2,7 +2,9 @@ new Vue({
     el: '#app',
     data: {
         stores: [],
-        loading: true
+        loading: true,
+        groupedStores: [],
+        isGrouped: false
     },
     mounted() {
         this.fetchStores();
@@ -23,6 +25,26 @@ new Vue({
         openMap(address) {
             const query = encodeURIComponent(`М. Дніпро, ${address}`);
             window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
+        },
+        groupByName() {
+            const grouped = this.stores.reduce((acc, store) => {
+                if (!acc[store.name]) {
+                    acc[store.name] = { name: store.name, addresses: [store.address] };
+                } else {
+                    acc[store.name].addresses.push(store.address);
+                }
+                return acc;
+            }, {});
+        
+            // Преобразуем объект grouped в массив и сортируем его по количеству адресов
+            const sortedGroups = Object.values(grouped).sort((a, b) => b.addresses.length - a.addresses.length);
+        
+            this.groupedStores = sortedGroups;
+            this.isGrouped = true;
+        },
+        ungroup() {
+            this.groupedStores = [];
+            this.isGrouped = false;
         }
     }
 });
